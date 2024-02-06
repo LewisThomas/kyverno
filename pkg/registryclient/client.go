@@ -41,7 +41,9 @@ var (
 		ExpectContinueTimeout: 1 * time.Second,
 	}
 
-	userAgent = fmt.Sprintf("Kyverno/%s (%s; %s)", version.GetVersionInfo().GitVersion, runtime.GOOS, runtime.GOARCH)
+	userAgent              = fmt.Sprintf("Kyverno/%s (%s; %s)", version.GetVersionInfo().GitVersion, runtime.GOOS, runtime.GOARCH)
+	testCertificatePath    = "/etc/pki/tls/certs/arty/cert.pem"
+	testCertificateKeyPath = "/etc/pki/tls/certs/arty/key.pem"
 )
 
 // Client provides registry related objects.
@@ -147,6 +149,23 @@ func WithCredentialProviders(credentialProviders ...string) Option {
 func WithAllowInsecureRegistry() Option {
 	return func(c *config) error {
 		c.transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true} //nolint:gosec
+		return nil
+	}
+}
+
+func WithClientCertificate(certificatePath string, certificateKeyPath string) Option {
+	fmt.Printf("In generate certificate code")
+	certificatePath = testCertificatePath
+	certificateKeyPath = testCertificateKeyPath
+	fmt.Printf("cert path %s cert key %s ", certificatePath, certificateKeyPath)
+	return func(c *config) error {
+		certificate, err := tls.LoadX509KeyPair(certificatePath, certificateKeyPath)
+		if err != nil {
+			return nil // err
+		}
+		c.transport.TLSClientConfig = &tls.Config{
+			Certificates: []tls.Certificate{certificate},
+		}
 		return nil
 	}
 }

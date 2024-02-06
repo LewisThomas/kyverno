@@ -3,6 +3,8 @@ package internal
 import (
 	"context"
 	"errors"
+
+	// "fmt"
 	"strings"
 
 	"github.com/go-logr/logr"
@@ -35,6 +37,9 @@ func setupRegistryClient(ctx context.Context, logger logr.Logger, client kuberne
 	if len(registryCredentialHelpers) > 0 {
 		registryOptions = append(registryOptions, registryclient.WithCredentialProviders(strings.Split(registryCredentialHelpers, ",")...))
 	}
+	registryOptions = append(registryOptions, registryclient.WithClientCertificate("", ""))
+	// fmt.Printf("Just added new client certificates via registry.go")
+
 	registryClient, err := registryclient.New(registryOptions...)
 	checkError(logger, err, "failed to create registry client")
 	return registryClient, secretLister

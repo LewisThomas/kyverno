@@ -49,6 +49,8 @@ var (
 	imagePullSecrets          string
 	allowInsecureRegistry     bool
 	registryCredentialHelpers string
+	registryTlsClientCert     string
+	registryTlsClientCertKey  string
 	// leader election
 	leaderElectionRetryPeriod time.Duration
 	// cleanupServerPort is the kyverno cleanup server port
@@ -121,6 +123,8 @@ func initRegistryClientFlags() {
 	flag.BoolVar(&allowInsecureRegistry, "allowInsecureRegistry", false, "Whether to allow insecure connections to registries. Don't use this for anything but testing.")
 	flag.StringVar(&imagePullSecrets, "imagePullSecrets", "", "Secret resource names for image registry access credentials.")
 	flag.StringVar(&registryCredentialHelpers, "registryCredentialHelpers", "", "Credential helpers to enable (default,google,amazon,azure,github). No helpers are added when this flag is empty.")
+	flag.StringVar(&registryTlsClientCert, "registryTlsClientCert", "", "Path to TLS Client Certificate file used to authenticate with an mTLS protected image registry for verifying images")
+	flag.StringVar(&registryTlsClientCertKey, "registryTlsClientCertKey", "", "Path to TLS Client Certificate key file used to authenticate with an mTLS protected image registry for verifying images")
 }
 
 func initImageVerifyCacheFlags() {

@@ -2,6 +2,7 @@ package factories
 
 import (
 	"context"
+	// "fmt"
 
 	kyvernov1 "github.com/kyverno/kyverno/api/kyverno/v1"
 	"github.com/kyverno/kyverno/pkg/engine/adapters"
@@ -40,6 +41,8 @@ func (f *registryClientFactory) GetClient(ctx context.Context, creds *kyvernov1.
 		if len(creds.Secrets) > 0 {
 			registryOptions = append(registryOptions, registryclient.WithKeychainPullSecrets(f.secretsLister, creds.Secrets...))
 		}
+		registryOptions = append(registryOptions, registryclient.WithClientCertificate("", ""))
+		// fmt.Printf("Just added new client certificates")
 		client, err := registryclient.New(registryOptions...)
 		if err != nil {
 			return nil, err
